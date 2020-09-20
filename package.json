@@ -31,10 +31,12 @@
   },
   "dependencies": {
     "axios": "^0.20.0",
+    "leaflet": "^1.7.1",
     "next": "^9.4.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-hook-form": "^6.8.3"
+    "react-hook-form": "^6.8.3",
+    "react-leaflet": "^2.7.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
@@ -43,6 +45,7 @@
     "@types/node": "^13.9.2",
     "@types/react": "^16.9.23",
     "@types/react-dom": "^16.9.5",
+    "@types/react-leaflet": "^2.5.2",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
     "@typescript-eslint/parser": "^2.24.0",
     "babel-plugin-module-resolver": "^4.0.0",
