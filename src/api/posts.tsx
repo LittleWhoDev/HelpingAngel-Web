@@ -1,3 +1,5 @@
+import Axios from 'axios';
+import { baseUrl } from './config';
 import { UserInterface } from './user';
 
 export interface PostInterface {
@@ -18,10 +20,19 @@ export enum PostType {
   OFFER,
   REQUEST,
 }
+export const PostTypeDisplay = {
+  [PostType.OFFER]: 'Offer',
+  [PostType.REQUEST]: 'Request',
+};
+export const PostTypes = Object.keys(PostTypeDisplay);
 
 export enum PostCategory {
   FOOD,
 }
+export const PostCategoryDisplay = {
+  [PostCategory.FOOD]: 'Food',
+};
+export const PostCategories = Object.keys(PostCategoryDisplay);
 
 export async function getAllPosts(): Promise<PostInterface[]> {
   return [
@@ -35,4 +46,17 @@ export async function getAllPosts(): Promise<PostInterface[]> {
       },
     },
   ];
+}
+
+export interface CreatePostForm {
+  title: string;
+  type: PostType | string;
+  category: PostCategory | string;
+  description?: string;
+}
+
+export async function createPost(
+  formData: CreatePostForm,
+): Promise<PointInterface> {
+  return Axios.post(`${baseUrl}/posts`, formData);
 }
