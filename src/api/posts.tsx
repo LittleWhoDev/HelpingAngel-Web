@@ -1,8 +1,10 @@
 import Axios from 'axios';
+import { FiltersQuery } from '@/hooks/map';
 import { baseUrl } from './config';
 import { UserInterface } from './user';
 
 export interface PostInterface {
+  _id: string;
   type: PostType;
   category: PostCategory;
   title: string;
@@ -34,18 +36,23 @@ export const PostCategoryDisplay = {
 };
 export const PostCategories = Object.keys(PostCategoryDisplay);
 
-export async function getAllPosts(): Promise<PostInterface[]> {
-  return [
-    {
-      type: PostType.OFFER,
-      category: PostCategory.FOOD,
-      title: 'Mock data',
-      location: {
-        type: 'Point',
-        coordinates: [46, 25],
-      },
-    },
-  ];
+function queryToString(filters: FiltersQuery): string {
+  let queryString = '/?';
+  Object.keys(filters).forEach((property) => {
+    queryString += filters[property] ? `${property}=${filters[property]}&` : '';
+  });
+
+  queryString = queryString.slice(0, queryString.length - 1);
+  return queryString.length > 2 ? queryString : '';
+}
+
+export async function getPosts(
+  filters: FiltersQuery,
+): Promise<PostInterface[]> {
+  const response = await Axios.get<PostInterface[]>(
+    `${baseUrl}/posts${queryToString(filters)}`,
+  );
+  return response.data as PostInterface[];
 }
 
 export interface CreatePostForm {

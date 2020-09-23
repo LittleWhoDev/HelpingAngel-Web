@@ -1,5 +1,5 @@
-import { usePosition } from '@/hooks/positions';
-import React from 'react';
+import { MapContext } from '@/hooks/map';
+import React, { useContext } from 'react';
 import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet';
 
 // WARNING: This module MUST be loaded only dynamically
@@ -8,7 +8,7 @@ import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet';
 const defaultZoom = 13;
 
 const Map: React.FC<{}> = () => {
-  const { position } = usePosition();
+  const { posts, position } = useContext(MapContext);
 
   return (
     <div style={{ height: '600px' }}>
@@ -17,13 +17,15 @@ const Map: React.FC<{}> = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
-        <Marker position={position}>
-          <Popup>
-            A pretty CSS3 popup.
-            <br />
-            Easily customizable.
-          </Popup>
-        </Marker>
+        {posts.map((post) => (
+          <Marker key={post._id} position={post.location.coordinates}>
+            <Popup>
+              {post.title}
+              <br />
+              {post.description}
+            </Popup>
+          </Marker>
+        ))}
       </LeafletMap>
     </div>
   );

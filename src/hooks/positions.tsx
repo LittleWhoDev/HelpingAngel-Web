@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 export type Position = [number, number];
-const defaultPosition: Position = [46.3791151, 24.8901918]; // Romania's center
+export const defaultPosition: Position = [46.3791151, 24.8901918]; // Romania's center
 
 interface PositionState {
   position: Position;
