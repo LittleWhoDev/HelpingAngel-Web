@@ -21,6 +21,7 @@
     "import/prefer-default-export": "off",
     "object-curly-newline": "off",
     "no-underscore-dangle": "off",
+    "function-paren-newline": "off",
     "react/prop-types": "off",
     "implicit-arrow-linebreak": "off",
     "react/jsx-filename-extension": "off",
@@ -58,7 +59,8 @@
           }
         ],
         "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-var-requires": "off"
+        "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/no-use-before-define": "off"
       }
     }
   ],

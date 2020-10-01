@@ -6,24 +6,36 @@ import Document, {
   NextScript,
   DocumentInitialProps,
 } from 'next/document';
+import { ServerStyleSheets } from '@material-ui/styles';
 
 class MyDocument extends Document {
   static async getInitialProps(ctx): Promise<DocumentInitialProps> {
+    // Necessary for Material-UI
+    // Taken from https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_document.js#L29
+    const sheets = new ServerStyleSheets();
+    const originalRenderPage = ctx.renderPage;
+
+    ctx.renderPage = () =>
+      originalRenderPage({
+        enhanceApp: (App) => (props) => sheets.collect(<App {...props} />),
+      });
+
     const initialProps = await Document.getInitialProps(ctx);
-    return { ...initialProps };
+
+    return {
+      ...initialProps,
+      // Styles fragment is rendered after the app and page rendering finish.
+      styles: [
+        ...React.Children.toArray(initialProps.styles),
+        sheets.getStyleElement(),
+      ],
+    };
   }
 
   render(): JSX.Element {
     return (
       <Html>
-        <Head>
-          <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css"
-          />
-          {/* WARNING: This is required by Leaflet map to work properly */}
-          <style>{'.leaflet-container { width: 100%; height: 100%; }'}</style>
-        </Head>
+        <Head />
         <body>
           <Main />
           <NextScript />

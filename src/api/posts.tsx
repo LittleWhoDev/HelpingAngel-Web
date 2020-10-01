@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import { FiltersQuery } from '@/hooks/map';
-import { baseUrl } from './config';
 import { UserInterface } from './user';
+import { baseUrl } from './config';
 
 export interface PostInterface {
   _id: string;
