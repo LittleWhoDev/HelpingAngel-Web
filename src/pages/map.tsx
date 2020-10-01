@@ -22,7 +22,7 @@ import {
   PersonOutline as PersonOutlineIcon,
   Add as AddIcon,
 } from '@material-ui/icons';
-import LogoIcon from '@/icons/logo.svg';
+import LogoIcon from '@/assets/icons/logo.svg';
 
 const MapComponent = dynamic(() => import('@/components/Map'), { ssr: false });
 
@@ -102,7 +102,7 @@ const Map: React.FC<{}> = () => {
           </Dialog>
           <AppBar>
             <Toolbar>
-              <SvgIcon component={LogoIcon} viewBox="0 0 600 476.6" />
+              <SvgIcon component={LogoIcon} viewBox="0 0 512 512" />
             </Toolbar>
           </AppBar>
         </Hidden>
