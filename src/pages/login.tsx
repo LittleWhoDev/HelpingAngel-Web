@@ -1,4 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { storeItem } from '@/state/persistent';
+import { login } from '@/api/login';
+import { LoginDTO } from '@/dtos/login';
 import {
   Box,
   Typography,
@@ -7,7 +11,11 @@ import {
   InputAdornment,
   SvgIcon,
   Button,
+  Snackbar,
+  Hidden,
 } from '@material-ui/core';
+import Navbar from '@/components/Navbar';
+import Alert from '@/components/Alert';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import BackgroundImg from '@/assets/images/bk.jpg';
 import {
@@ -16,13 +24,42 @@ import {
 } from '@material-ui/icons';
 import LogoIcon from '@/assets/icons/logo.svg';
 import clsx from 'clsx';
+import { useForm } from 'react-hook-form';
 
-const Login = (): JSX.Element => {
+const Login: React.FC<{}> = (): JSX.Element => {
+  const [error, setError] = useState(undefined as undefined | string);
+  const { register, handleSubmit } = useForm<LoginDTO>();
+  const [openSnack, setOpenSnack] = useState(false);
+
   const classes = useStyles();
+
+  const handleCloseSnack = (
+    event?: React.SyntheticEvent,
+    reason?: string,
+  ): void => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSnack(false);
+  };
+
+  const onSubmit = handleSubmit(async (formData) => {
+    try {
+      const resp = await login(formData);
+      storeItem('token', resp.data.token);
+    } catch (_) {
+      setError('Could not login');
+      setOpenSnack(true);
+    }
+  });
 
   return (
     <Box className={classes.root}>
       <Box className={classes.rootContainer}>
+        <Hidden smDown>
+          <Navbar />
+        </Hidden>
         <Grid
           container
           direction="column"
@@ -47,10 +84,35 @@ const Login = (): JSX.Element => {
               Helping Angel
             </Typography>
           </Grid>
-          <Grid container item direction="column">
+          <Grid
+            container
+            item
+            direction="column"
+            component="form"
+            onSubmit={onSubmit}
+            sm={6}
+            md={3}
+          >
+            <Snackbar
+              open={openSnack}
+              autoHideDuration={6000}
+              onClose={handleCloseSnack}
+              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+              <Alert
+                onClose={handleCloseSnack}
+                severity="error"
+                className={classes.snack}
+              >
+                {error !== undefined ? error : null}
+              </Alert>
+            </Snackbar>
+
             <Input
               id="email"
               type="email"
+              name="email"
+              ref={register}
               required
               startAdornment={
                 <InputAdornment position="start">
@@ -62,8 +124,10 @@ const Login = (): JSX.Element => {
               className={classes.input}
             />
             <Input
-              id="Password"
+              id="password"
               type="password"
+              name="password"
+              ref={register}
               required
               startAdornment={
                 <InputAdornment position="start">
@@ -74,34 +138,44 @@ const Login = (): JSX.Element => {
               disableUnderline
               className={classes.input}
             />
-          </Grid>
-          <Grid container item justify="flex-end">
-            <Typography
-              variant="subtitle2"
-              align="right"
-              className={classes.textWhite}
-            >
-              Forgot your password?
-            </Typography>
-          </Grid>
-          <Grid container item>
-            <Button
-              color="primary"
-              variant="contained"
-              className={classes.submit}
-              fullWidth
-              size="small"
-            >
-              Login
-            </Button>
+            <Grid container item justify="flex-end">
+              {/* TODO: link to ForgotPassword */}
+              <Link href="/map">
+                <Typography
+                  variant="subtitle2"
+                  align="right"
+                  className={clsx(classes.textWhite, classes.hoverLink)}
+                >
+                  Forgot your password?
+                </Typography>
+              </Link>
+            </Grid>
+            <Grid container item>
+              <Button
+                color="primary"
+                type="submit"
+                variant="contained"
+                className={classes.submit}
+                fullWidth
+                size="small"
+              >
+                Login
+              </Button>
+            </Grid>
           </Grid>
           <Grid container item justify="center">
-            <Typography
-              variant="overline"
-              className={clsx(classes.textWhite, classes.footText)}
-            >
-              Create new account
-            </Typography>
+            <Link href="/register">
+              <Typography
+                variant="overline"
+                className={clsx(
+                  classes.footText,
+                  classes.textWhite,
+                  classes.hoverLink,
+                )}
+              >
+                Create new account
+              </Typography>
+            </Link>
           </Grid>
         </Grid>
       </Box>
@@ -166,6 +240,15 @@ const useStyles = makeStyles(
     footText: {
       textDecoration: 'underline',
       marginTop: '4rem',
+    },
+    snack: {
+      maxWidth: '70%',
+    },
+    hoverLink: {
+      '&:hover': {
+        color: 'rgb(128, 156, 191)',
+        cursor: 'pointer',
+      },
     },
   }),
 );

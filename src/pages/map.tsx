@@ -13,8 +13,8 @@ import {
   Box,
   Hidden,
   Theme,
-  SvgIcon,
 } from '@material-ui/core';
+import Navbar from '@/components/Navbar';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import {
   ArrowBackIos as ArrowBackIosIcon,
@@ -22,7 +22,6 @@ import {
   PersonOutline as PersonOutlineIcon,
   Add as AddIcon,
 } from '@material-ui/icons';
-import LogoIcon from '@/assets/icons/logo.svg';
 
 const MapComponent = dynamic(() => import('@/components/Map'), { ssr: false });
 
@@ -81,7 +80,8 @@ const Map: React.FC<{}> = () => {
               >
                 <AddIcon />
               </Fab>
-              <IconButton color="inherit" aria-label="menu">
+              {/* TODO: href to Account page */}
+              <IconButton color="inherit" aria-label="menu" href="/login">
                 <PersonOutlineIcon />
               </IconButton>
             </Toolbar>
@@ -100,11 +100,7 @@ const Map: React.FC<{}> = () => {
             </Box>
             <Filter closeDialog={handleClose} />
           </Dialog>
-          <AppBar>
-            <Toolbar>
-              <SvgIcon component={LogoIcon} viewBox="0 0 512 512" />
-            </Toolbar>
-          </AppBar>
+          <Navbar />
         </Hidden>
       </MapContext.Provider>
     </>

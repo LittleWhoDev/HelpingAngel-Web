@@ -4,6 +4,8 @@ import { storeItem } from '@/state/persistent';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+// UNUSED COMPONENT
+
 const Login: React.FC<{}> = () => {
   const [error, setError] = useState(undefined as undefined | string);
   const { register, handleSubmit } = useForm<LoginDTO>();
