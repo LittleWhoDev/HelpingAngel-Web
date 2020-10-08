@@ -39,7 +39,10 @@ export const PostCategories = Object.keys(PostCategoryDisplay);
 function queryToString(filters: FiltersQuery): string {
   let queryString = '/?';
   Object.keys(filters).forEach((property) => {
-    queryString += filters[property] ? `${property}=${filters[property]}&` : '';
+    queryString +=
+      filters[property] !== undefined
+        ? `${property}=${filters[property]}&`
+        : '';
   });
 
   queryString = queryString.slice(0, queryString.length - 1);
