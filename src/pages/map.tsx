@@ -138,10 +138,7 @@ const Map: React.FC<{}> = () => {
           </AppBar>
         </Hidden>
         <Hidden smDown>
-          <Dialog
-            onClose={handleClose('filters')}
-            open={dialogsState['filters']}
-          >
+          <Dialog onClose={handleClose('filters')} open={dialogsState.filters}>
             <Box className={classes.headDialog} bgcolor="primary.main">
               <Typography
                 className={classes.toolBarTitle}

@@ -1,9 +1,7 @@
 import {
   createPost,
   CreatePostForm,
-  PostCategories,
   PostCategory,
-  PostCategoryDisplay,
   PostType,
   PostTypeDisplay,
   PostTypes,
