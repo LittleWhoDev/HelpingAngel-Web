@@ -1,6 +1,3 @@
-import { stringToUserRole } from '@/api/user';
-import Login from '@/components/Login';
-import Register from '@/components/Register';
 import Selector from '@/components/Selector';
 import useMultiform from '@/hooks/multiform';
 import React, { useState } from 'react';
@@ -17,7 +14,6 @@ const Home: React.FC<{}> = () => {
         }}
       />,
       <>
-        <Login />
         <button
           type="button"
           onClick={() => {
@@ -28,7 +24,6 @@ const Home: React.FC<{}> = () => {
         </button>
       </>,
       <>
-        <Register role={stringToUserRole(role)} />
         <button
           type="button"
           onClick={() => {
