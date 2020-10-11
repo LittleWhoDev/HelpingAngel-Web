@@ -13,20 +13,23 @@ import {
   Grid,
   makeStyles,
   Theme,
-  Input,
   TextField,
-  FormLabel,
   RadioGroup,
   Radio,
   FormControlLabel,
   Snackbar,
+  Typography,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-const Create: React.FC<{}> = () => {
+interface CreateProps {
+  closeDialog: () => void;
+}
+
+const Create: React.FC<CreateProps> = ({ closeDialog }) => {
   const classes = useStyles();
   const [error, setError] = useState('');
   const { register, handleSubmit } = useForm<CreatePostForm>();
@@ -43,6 +46,7 @@ const Create: React.FC<{}> = () => {
       setError('Could not create post');
       setOpenSnack(true);
     }
+    closeDialog();
   });
   const [openSnack, setOpenSnack] = useState(false);
   const handleCloseSnack = (
@@ -57,77 +61,90 @@ const Create: React.FC<{}> = () => {
   };
 
   return (
-    <>
-      <Box className={classes.root}>
-        <Box className={clsx(classes.firstElem)}>
-          <Grid
-            container
-            direction="row"
-            justify="center"
-            alignItems="center"
-            spacing={3}
-            component="form"
-            onSubmit={onSubmit}
-          >
-            <Snackbar
-              open={openSnack}
-              autoHideDuration={6000}
-              onClose={handleCloseSnack}
-              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            >
-              <Alert
-                onClose={handleCloseSnack}
-                severity="error"
-                className={classes.snack}
-              >
-                {error !== undefined ? error : null}
-              </Alert>
-            </Snackbar>
+    <Grid
+      className={classes.root}
+      container
+      direction="column"
+      justify="center"
+      alignItems="center"
+      component="form"
+      onSubmit={onSubmit}
+    >
+      <Snackbar
+        open={openSnack}
+        autoHideDuration={6000}
+        onClose={handleCloseSnack}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleCloseSnack}
+          severity="error"
+          className={classes.snack}
+        >
+          {error !== undefined ? error : null}
+        </Alert>
+      </Snackbar>
 
-            <Input
-              name="title"
+      <TextField
+        name="title"
+        inputRef={register}
+        required
+        placeholder="Title"
+        className={clsx(classes.inputOuter, classes.firstElem)}
+        InputProps={{
+          disableUnderline: true,
+          classes: { input: classes.inputInner },
+        }}
+      />
+      <TextField
+        name="description"
+        multiline
+        rowsMax={5}
+        rows={5}
+        inputRef={register}
+        required
+        placeholder="Description"
+        className={clsx(classes.inputOuter)}
+        InputProps={{
+          disableUnderline: true,
+          classes: { input: classes.inputInner },
+        }}
+      />
+      <Box className={classes.radioContainer}>
+        <Typography variant="h4">Type</Typography>
+        <RadioGroup row aria-label="position" name="type">
+          {PostTypes.map((type) => (
+            <FormControlLabel
+              value={type}
+              name="type"
+              control={<Radio color="primary" />}
+              label={PostTypeDisplay[type]}
+              labelPlacement="top"
               inputRef={register}
-              required
-              placeholder="Title"
-              disableUnderline
-              className={clsx(classes.input)}
             />
-            <TextField
-              name="description"
-              multiline
-              rowsMax={5}
-              rows={5}
-              inputRef={register}
-              required
-              placeholder="Description"
-              className={clsx(classes.input)}
-            />
-            <FormLabel component="legend">Type</FormLabel>
-            <RadioGroup row aria-label="position" name="type">
-              {PostTypes.map((type) => (
-                <FormControlLabel
-                  value={type}
-                  name="type"
-                  control={<Radio color="primary" />}
-                  label={PostTypeDisplay[type]}
-                  labelPlacement="top"
-                  inputRef={register}
-                />
-              ))}
-            </RadioGroup>
-            <Input
-              name="address"
-              inputRef={register}
-              required
-              placeholder="Physical address"
-              disableUnderline
-              className={clsx(classes.input)}
-            />
-            <Button type="submit">Add</Button>
-          </Grid>
-        </Box>
+          ))}
+        </RadioGroup>
       </Box>
-    </>
+      <TextField
+        name="address"
+        inputRef={register}
+        required
+        placeholder="Physical address"
+        className={clsx(classes.inputOuter)}
+        InputProps={{
+          disableUnderline: true,
+          classes: { input: classes.inputInner },
+        }}
+      />
+      <Button
+        className={clsx(classes.submit, classes.button)}
+        variant="contained"
+        color="primary"
+        type="submit"
+      >
+        <Typography variant="body1">Add</Typography>
+      </Button>
+    </Grid>
   );
 };
 
@@ -147,9 +164,10 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       [theme.breakpoints.up('md')]: {
         display: 'grid',
-        gridRowGap: '3rem',
+        gridRowGap: '1rem',
         alignItems: 'center',
         margin: '1rem 3rem 1.5rem',
+        width: 'auto',
       },
     },
     firstElem: {
@@ -158,15 +176,31 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       marginTop: '1rem',
     },
-    input: {
-      '&::placeholder': {
-        color: 'white',
-      },
-      color: 'white',
-      backgroundColor: 'rgba(76, 76, 76, 0.5)',
+    radioContainer: {
+      display: 'grid',
+      gridTemplateColumns: '1fr',
+      alignItems: 'center',
+      justifyItems: 'center',
+      rowGap: '1rem',
+      padding: '1rem 0',
+    },
+    inputOuter: {
+      backgroundColor: 'rgba(63, 81, 181, 1)',
       borderRadius: '0.5rem',
       padding: '0.4rem 1rem',
       marginBottom: '1rem',
+    },
+    inputInner: {
+      '&::placeholder': {
+        color: 'white',
+        opacity: 0.7,
+      },
+      '&:hover': {
+        '&::placeholder': {
+          opacity: 0.9,
+        },
+      },
+      color: 'white',
     },
     submit: {
       [theme.breakpoints.down('sm')]: {
@@ -182,6 +216,9 @@ const useStyles = makeStyles((theme: Theme) =>
     button: {
       '& *': {
         pointerEvents: 'none',
+      },
+      '&:hover': {
+        backgroundColor: '#f44336',
       },
     },
   }),

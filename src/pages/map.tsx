@@ -13,7 +13,6 @@ import {
   Box,
   Hidden,
   Theme,
-  Grid,
 } from '@material-ui/core';
 import Navbar from '@/components/Navbar';
 import { makeStyles, createStyles } from '@material-ui/styles';
@@ -78,16 +77,7 @@ const Map: React.FC<{}> = () => {
                 <Box />
               </Toolbar>
             </AppBar>
-            <Grid
-              container
-              item
-              direction="column"
-              component="form"
-              sm={6}
-              md={3}
-            >
-              <Create />
-            </Grid>
+            <Create closeDialog={handleClose('addPost')} />
           </Dialog>
           <Dialog
             fullScreen
@@ -138,6 +128,19 @@ const Map: React.FC<{}> = () => {
           </AppBar>
         </Hidden>
         <Hidden smDown>
+          <Fab
+            color="secondary"
+            aria-label="add"
+            className={classes.fabButtonLarge}
+          >
+            <IconButton
+              onClick={() => {
+                setDialogsState({ ...dialogsState, addPost: true });
+              }}
+            >
+              <AddIcon />
+            </IconButton>
+          </Fab>
           <Dialog onClose={handleClose('filters')} open={dialogsState.filters}>
             <Box className={classes.headDialog} bgcolor="primary.main">
               <Typography
@@ -149,6 +152,18 @@ const Map: React.FC<{}> = () => {
               </Typography>
             </Box>
             <Filter closeDialog={handleClose('filters')} />
+          </Dialog>
+          <Dialog onClose={handleClose('addPost')} open={dialogsState.addPost}>
+            <Box className={classes.headDialog} bgcolor="primary.main">
+              <Typography
+                className={classes.toolBarTitle}
+                variant="h5"
+                align="center"
+              >
+                Add Post
+              </Typography>
+            </Box>
+            <Create closeDialog={handleClose('addPost')} />
           </Dialog>
           <Navbar />
         </Hidden>
@@ -171,6 +186,13 @@ const useStyles = makeStyles((theme: Theme) =>
         top: '1.5rem',
         right: '1rem',
       },
+    },
+    fabButtonLarge: {
+      bottom: '3rem',
+      left: '47%',
+      position: 'fixed',
+      zIndex: 1200,
+      transform: 'scale(1.4)',
     },
     toolBarDialog: {
       display: 'flex',
