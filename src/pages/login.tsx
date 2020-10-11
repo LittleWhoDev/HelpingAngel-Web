@@ -111,8 +111,8 @@ const Login: React.FC<{}> = (): JSX.Element => {
             <Input
               id="email"
               type="email"
-              name="email"
-              ref={register}
+              name="username"
+              inputRef={register}
               required
               startAdornment={
                 <InputAdornment position="start">
@@ -127,7 +127,7 @@ const Login: React.FC<{}> = (): JSX.Element => {
               id="password"
               type="password"
               name="password"
-              ref={register}
+              inputRef={register}
               required
               startAdornment={
                 <InputAdornment position="start">
