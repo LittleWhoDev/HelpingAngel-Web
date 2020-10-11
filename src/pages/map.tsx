@@ -22,17 +22,24 @@ import {
   PersonOutline as PersonOutlineIcon,
   Add as AddIcon,
 } from '@material-ui/icons';
+import Create from '@/components/Post/Create';
 
 const MapComponent = dynamic(() => import('@/components/Map'), { ssr: false });
 
+interface DialogsState {
+  [key: string]: boolean;
+}
+
 const Map: React.FC<{}> = () => {
   const mapState = useMapState();
-  const [open, setOpen] = useState(false);
+  const [dialogsState, setDialogsState] = useState<DialogsState>({
+    filters: false,
+    addPost: false,
+  });
   const classes = useStyles();
 
-  const handleClose = (): void => {
-    setOpen(false);
-  };
+  const handleClose = (dialogName: string): (() => void) => (): void =>
+    setDialogsState({ ...dialogsState, [dialogName]: false });
 
   return (
     <>
@@ -42,21 +49,48 @@ const Map: React.FC<{}> = () => {
           variant="contained"
           color="primary"
           onClick={() => {
-            setOpen(true);
+            setDialogsState({ ...dialogsState, filters: true });
           }}
           className={classes.filterButton}
         >
           Filters
         </Button>
         <Hidden mdUp>
-          <Dialog fullScreen onClose={handleClose} open={open}>
+          <Dialog
+            fullScreen
+            onClose={handleClose('addPost')}
+            open={dialogsState.addPost}
+          >
             <AppBar>
               <Toolbar className={classes.toolBarDialog}>
                 <IconButton
                   edge="start"
                   color="inherit"
                   aria-label="menu"
-                  onClick={handleClose}
+                  onClick={handleClose('addPost')}
+                >
+                  <ArrowBackIosIcon />
+                </IconButton>
+                <Typography className={classes.toolBarTitle} variant="h6">
+                  Add a new post
+                </Typography>
+                <Box />
+              </Toolbar>
+            </AppBar>
+            <Create closeDialog={handleClose('addPost')} />
+          </Dialog>
+          <Dialog
+            fullScreen
+            onClose={handleClose('filters')}
+            open={dialogsState.filters}
+          >
+            <AppBar>
+              <Toolbar className={classes.toolBarDialog}>
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  onClick={handleClose('filters')}
                 >
                   <ArrowBackIosIcon />
                 </IconButton>
@@ -66,7 +100,7 @@ const Map: React.FC<{}> = () => {
                 <Box />
               </Toolbar>
             </AppBar>
-            <Filter closeDialog={handleClose} />
+            <Filter closeDialog={handleClose('filters')} />
           </Dialog>
           <AppBar className={classes.appBarMain}>
             <Toolbar className={classes.toolBarDialog}>
@@ -78,7 +112,13 @@ const Map: React.FC<{}> = () => {
                 aria-label="add"
                 className={classes.fabButton}
               >
-                <AddIcon />
+                <IconButton
+                  onClick={() => {
+                    setDialogsState({ ...dialogsState, addPost: true });
+                  }}
+                >
+                  <AddIcon />
+                </IconButton>
               </Fab>
               {/* TODO: href to Account page */}
               <IconButton color="inherit" aria-label="menu" href="/login">
@@ -88,7 +128,20 @@ const Map: React.FC<{}> = () => {
           </AppBar>
         </Hidden>
         <Hidden smDown>
-          <Dialog onClose={handleClose} open={open}>
+          <Fab
+            color="secondary"
+            aria-label="add"
+            className={classes.fabButtonLarge}
+          >
+            <IconButton
+              onClick={() => {
+                setDialogsState({ ...dialogsState, addPost: true });
+              }}
+            >
+              <AddIcon />
+            </IconButton>
+          </Fab>
+          <Dialog onClose={handleClose('filters')} open={dialogsState.filters}>
             <Box className={classes.headDialog} bgcolor="primary.main">
               <Typography
                 className={classes.toolBarTitle}
@@ -98,7 +151,19 @@ const Map: React.FC<{}> = () => {
                 Filters
               </Typography>
             </Box>
-            <Filter closeDialog={handleClose} />
+            <Filter closeDialog={handleClose('filters')} />
+          </Dialog>
+          <Dialog onClose={handleClose('addPost')} open={dialogsState.addPost}>
+            <Box className={classes.headDialog} bgcolor="primary.main">
+              <Typography
+                className={classes.toolBarTitle}
+                variant="h5"
+                align="center"
+              >
+                Add Post
+              </Typography>
+            </Box>
+            <Create closeDialog={handleClose('addPost')} />
           </Dialog>
           <Navbar />
         </Hidden>
@@ -121,6 +186,13 @@ const useStyles = makeStyles((theme: Theme) =>
         top: '1.5rem',
         right: '1rem',
       },
+    },
+    fabButtonLarge: {
+      bottom: '3rem',
+      left: '47%',
+      position: 'fixed',
+      zIndex: 1200,
+      transform: 'scale(1.4)',
     },
     toolBarDialog: {
       display: 'flex',
