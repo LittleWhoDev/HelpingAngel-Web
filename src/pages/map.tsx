@@ -120,6 +120,7 @@ const Map: React.FC<{}> = () => {
                   <AddIcon />
                 </IconButton>
               </Fab>
+              <Box width="10%" />
               {/* TODO: href to Account page */}
               <IconButton color="inherit" aria-label="menu" href="/login">
                 <PersonOutlineIcon />
@@ -196,7 +197,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     toolBarDialog: {
       display: 'flex',
-      justifyContent: 'space-between',
+      justifyContent: 'space-evenly',
     },
     headDialog: {
       [theme.breakpoints.down('sm')]: {
