@@ -25,7 +25,7 @@ import {
 import clsx from 'clsx';
 import { useForm } from 'react-hook-form';
 
-const Login: React.FC<{}> = (): JSX.Element => {
+const Register: React.FC<{}> = (): JSX.Element => {
   const [error, setError] = useState(undefined as undefined | string);
   const { register, handleSubmit } = useForm<LoginDTO>();
   const [openSnack, setOpenSnack] = useState(false);
@@ -258,4 +258,4 @@ const useStyles = makeStyles(
   }),
 );
 
-export default Login;
+export default Register;
